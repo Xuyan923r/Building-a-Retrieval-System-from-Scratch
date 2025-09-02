@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能信息检索系统 - 中国人民大学</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="{{ url_for('static', filename='imgs/111.png') }}" alt="Logo" class="logo-img">
+                <span class="logo-text">智能信息检索系统</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active">搜索</a>
+                <a href="https://www.ruc.edu.cn/" class="nav-link" target="_blank">人大官网</a>
+                <a href="http://ai.ruc.edu.cn/" class="nav-link" target="_blank">高瓴官网</a>
+                <a href="https://lib.ruc.edu.cn/" class="nav-link" target="_blank">图书馆</a>
+                <a href="https://v.ruc.edu.cn/me#/" class="nav-link" target="_blank">微人大</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <!-- 搜索区域 -->
+        <section class="search-section">
+            <div class="search-background"></div>
+            <div class="search-container">
+                <div class="search-header">
+                    <p class="search-subtitle">智能算法驱动，为您提供精准高效的信息检索服务</p>
+                </div>
+                
+                <div class="search-box-container">
+                    <div class="search-box">
+                        <div class="search-input-wrapper">
+                            <div class="search-input-container">
+                                <i class="fas fa-search search-icon" id="searchIcon"></i>
+                                <input type="text" id="searchInput" class="search-input" placeholder="请输入您要搜索的关键词..." autocomplete="off">
+                            </div>
+                            <button id="searchBtn" class="search-button">
+                                搜索
+                            </button>
+                        </div>
+                        <div class="search-suggestions" id="searchSuggestions"></div>
+                    </div>
+                </div>
+
+                <!-- 推荐关键词 -->
+                <div class="recommended-keywords">
+                    <div class="keywords-list">
+                        <a href="#" class="keyword-link" onclick="searchEngine.searchKeyword('先锋闯将')">先锋闯将</a>
+                        <a href="#" class="keyword-link" onclick="searchEngine.searchKeyword('数字经济')">数字经济</a>
+                        <a href="#" class="keyword-link" onclick="searchEngine.searchKeyword('人工智能')">人工智能</a>
+                        <a href="#" class="keyword-link" onclick="searchEngine.searchKeyword('奖学金')">奖学金</a>
+                        <a href="#" class="keyword-link" onclick="searchEngine.searchKeyword('通州校区')">通州校区</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 搜索结果区域 -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-container">
+                <div class="results-header">
+                    <div class="results-info">
+                        <h2 class="results-title">搜索结果</h2>
+                        <div class="results-stats">
+                            <span class="results-count" id="resultsCount">0</span> 个结果
+                            <span class="results-time" id="resultsTime">0</span> 毫秒
+                        </div>
+                    </div>
+                    <div class="results-actions">
+                        <button class="action-btn" id="exportBtn" title="导出结果">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="action-btn" id="shareBtn" title="分享结果">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-query-display">
+                    <span class="query-label">搜索：</span>
+                    <span class="query-text" id="queryText"></span>
+                </div>
+
+                <div class="results-list" id="resultsList">
+                    <!-- 搜索结果将在这里动态生成 -->
+                </div>
+
+                <!-- 分页控件 -->
+                <div class="pagination" id="pagination">
+                    <!-- 分页按钮将在这里动态生成 -->
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- 空状态 -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3 class="empty-title">暂无搜索结果</h3>
+            <p class="empty-description">请尝试使用其他关键词或调整搜索条件</p>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <p>&copy; 2024 中国人民大学高瓴人工智能学院 | 智能信息检索系统</p>
+                <p>信息检索与数据挖掘实验室 | 让信息检索更智能</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 结果详情模态框 -->
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">搜索结果详情</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 模态框内容将在这里动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知提示 -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <i class="notification-icon"></i>
+            <span class="notification-message"></span>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
